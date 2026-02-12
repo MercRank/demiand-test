@@ -3,6 +3,7 @@ aiogram
 pandas
 openpyxl
 langchain
+langchain-core
 langchain-openai
 langchain-community
 qdrant-client

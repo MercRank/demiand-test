@@ -5,7 +5,7 @@ import re
 import hashlib
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Qdrant
-from langchain.schema import Document
+from langchain_core.documents import Document
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from dotenv import load_dotenv
