@@ -1,0 +1,13 @@
+streamlit
+aiogram
+pandas
+openpyxl
+langchain
+langchain-openai
+langchain-community
+qdrant-client
+python-dotenv
+openai
+tiktoken
+httpx
+watchdog
