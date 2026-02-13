@@ -47,7 +47,7 @@ vector_store = Qdrant(
 
 llm = ChatOpenAI(
     temperature=0,
-    model_name="gpt-4o",  # Используем современную модель
+    model_name="gpt-4o",  
     openai_api_key=OPENAI_API_KEY
 )
 
