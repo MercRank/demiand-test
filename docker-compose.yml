@@ -11,12 +11,6 @@ services:
       - "6334:6334"
     volumes:
       - qdrant_data:/qdrant/storage
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:6333/healthz || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
     networks:
       - app-network
 
@@ -34,8 +28,7 @@ services:
       - QDRANT_URL=http://qdrant:6333
       - PYTHONUNBUFFERED=1
     depends_on:
-      qdrant:
-        condition: service_healthy
+      - qdrant
     networks:
       - app-network
     logging:
@@ -60,8 +53,7 @@ services:
     ports:
       - "8501:8501"
     depends_on:
-      qdrant:
-        condition: service_healthy
+      - qdrant
     networks:
       - app-network
     logging:
