@@ -30,8 +30,8 @@
 ### Шаг 1: Клонирование репозитория
 
 ```bash
-git clone <ваш-репозиторий>
-cd <папка-проекта>
+git clone https://github.com/MercRank/demiand-test.git
+cd demiand-test
 ```
 
 ### Шаг 2: Настройка окружения
