@@ -27,6 +27,7 @@ services:
     environment:
       - QDRANT_URL=http://qdrant:6333
       - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
     depends_on:
       - qdrant
     networks:
@@ -50,6 +51,7 @@ services:
     environment:
       - QDRANT_URL=http://qdrant:6333
       - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
     ports:
       - "8501:8501"
     depends_on:
