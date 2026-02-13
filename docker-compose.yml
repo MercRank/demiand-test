@@ -1,34 +1,79 @@
 version: '3.8'
 
 services:
+  # Векторная база данных Qdrant
   qdrant:
-    image: qdrant/qdrant
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: always
     ports:
       - "6333:6333"
+      - "6334:6334"
     volumes:
       - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:6333/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - app-network
 
-  admin_ui:
-    build: .
-    command: streamlit run src/admin_ui.py --server.port 8501 --server.address 0.0.0.0
+  # Telegram бот
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: telegram-bot
+    restart: always
+    command: python -m src.bot.main
+    env_file:
+      - .env
+    environment:
+      - QDRANT_URL=http://qdrant:6333
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Админ-панель Streamlit
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: admin-panel
+    restart: always
+    command: streamlit run src/admin/app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
+    env_file:
+      - .env
+    environment:
+      - QDRANT_URL=http://qdrant:6333
+      - PYTHONUNBUFFERED=1
     ports:
       - "8501:8501"
-    environment:
-      - QDRANT_URL=http://qdrant:6333
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
-      - qdrant
+      qdrant:
+        condition: service_healthy
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  bot:
-    build: .
-    command: python src/bot.py
-    environment:
-      - QDRANT_URL=http://qdrant:6333
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-    depends_on:
-      - qdrant
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   qdrant_data:
-
+    driver: local

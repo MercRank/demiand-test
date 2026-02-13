@@ -1,11 +1,73 @@
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-.env
-.venv
-env/
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
 venv/
-.DS_Store
-.idea/
+ENV/
+env/
+.venv
+
+# Environment variables
+.env
+.env.local
+
+# IDE
 .vscode/
-qdrant_data/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# Data
+data/
+*.csv
+*.xlsx
+*.xls
+
+# Qdrant local storage
+qdrant_storage/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
