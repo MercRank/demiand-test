@@ -10,7 +10,7 @@ class Config:
     
     # OpenAI
     openai_api_key: str
-    openai_model: str = "gpt-4o-mini"
+    openai_model: str = "gpt-4o"
     openai_embedding_model: str = "text-embedding-3-large"
     openai_temperature: float = 0.0
     openai_max_tokens: int = 2000
@@ -25,8 +25,8 @@ class Config:
     telegram_bot_token: str = ""
     
     # RAG
-    rag_top_k: int = 5
-    rag_score_threshold: float = 0.7
+    rag_top_k: int = 10
+    rag_score_threshold: float = 0.3
     
     # System
     system_prompt: str = """Ты — ассистент по подбору и анализу моделей аэрогрилей.
