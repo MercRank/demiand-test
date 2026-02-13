@@ -16,7 +16,7 @@ load_dotenv()
 # Конфигурация Qdrant и OpenAI
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
-COLLECTION_NAME = "airfryers"  # Используем то же имя коллекции, что и в n8n
+COLLECTION_NAME = os.getenv("COLLECTION_NAME", "airfryers")  # Используем то же имя коллекции, что и в n8n
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 def get_qdrant_client():

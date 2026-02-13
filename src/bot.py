@@ -26,7 +26,7 @@ dp = Dispatcher()
 # Инициализация компонентов Qdrant и LangChain
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
-COLLECTION_NAME = "airfryers"  # Имя коллекции должно совпадать с indexer.py
+COLLECTION_NAME = os.getenv("COLLECTION_NAME", "airfryers")  # Имя коллекции должно совпадать с indexer.py
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Используем ту же модель эмбеддингов, что и при индексации
@@ -44,8 +44,7 @@ vector_store = Qdrant(
     api_key=QDRANT_API_KEY,
 )
 
-# Инициализация LLM (GPT-4o или GPT-3.5-turbo, как в n8n использовался gpt-4.1 - вероятно опечатка, скорее всего gpt-4-turbo или gpt-4o)
-# Для экономии можно использовать gpt-3.5-turbo, но для качества лучше gpt-4o
+
 llm = ChatOpenAI(
     temperature=0,
     model_name="gpt-4o",  # Используем современную модель
