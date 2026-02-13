@@ -90,8 +90,10 @@ sudo usermod -aG docker $USER
 
     ```bash
     cd ~
-    git clone <URL_ВАШЕГО_РЕПОЗИТОРИЯ> rag-agent
-    cd rag-agent
+    git clone <URL_ВАШЕГО_РЕПОЗИТОРИЯ> demiand-test
+
+    cd demiand-test
+
     ```
 
 2.  **Создайте файл конфигурации**:
@@ -190,7 +192,7 @@ sudo ufw enable
 Чтобы обновить проект до последней версии кода:
 
 ```bash
-cd ~/rag-agent
+cd ~/demiand-test
 git pull
 docker compose up --build -d
 ```

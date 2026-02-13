@@ -23,22 +23,28 @@ def get_qdrant_client():
     """Создает и возвращает клиент Qdrant."""
     return QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
 
-def create_collection_if_not_exists():
-    """Проверяет наличие коллекции в Qdrant и создает её, если она отсутствует."""
+def recreate_collection():
+    """Пересоздает коллекцию в Qdrant."""
     client = get_qdrant_client()
+    
+    # Удаляем коллекцию, если она существует (чтобы очистить данные)
+    # Используем recreate_collection из qdrant-client, который делает это атомарно или просто удаляет и создает
+    # Но для надежности и совместимости сделаем явно delete + create или recreate_collection если доступен
+    
+    # Проверяем наличие
     collections = client.get_collections().collections
     collection_names = [c.name for c in collections]
     
-    if COLLECTION_NAME not in collection_names:
-        # Создаем коллекцию с размером вектора 3072 (для text-embedding-3-large)
-        # В n8n использовалась модель text-embedding-3-large, у нее размерность 3072
-        client.create_collection(
-            collection_name=COLLECTION_NAME,
-            vectors_config=models.VectorParams(size=3072, distance=models.Distance.COSINE),
-        )
-        print(f"Коллекция '{COLLECTION_NAME}' успешно создана.")
-    else:
-        print(f"Коллекция '{COLLECTION_NAME}' уже существует.")
+    if COLLECTION_NAME in collection_names:
+        client.delete_collection(collection_name=COLLECTION_NAME)
+        print(f"Коллекция '{COLLECTION_NAME}' удалена.")
+
+    # Создаем коллекцию с размером вектора 3072 (для text-embedding-3-large)
+    client.create_collection(
+        collection_name=COLLECTION_NAME,
+        vectors_config=models.VectorParams(size=3072, distance=models.Distance.COSINE),
+    )
+    print(f"Коллекция '{COLLECTION_NAME}' успешно создана.")
 
 def string_to_numeric_id(s):
     """Генерирует числовой ID из строки (аналог функции из n8n)."""
@@ -175,18 +181,22 @@ def process_file(file_path):
     )
 
     # Загрузка в Qdrant
-    create_collection_if_not_exists()
+    # Пересоздаем коллекцию перед загрузкой, чтобы избежать дублей (аналог force_recreate=True)
+    recreate_collection()
     
     # Используем Qdrant.from_documents для простоты
     # Это создаст векторы и загрузит их
+    # force_recreate=False, так как мы уже создали коллекцию выше (или она уже есть)
+    # Если нужно очистить коллекцию перед загрузкой, это лучше делать явно через client.delete_collection
+    # Но в данном случае, чтобы избежать ошибки "Unknown arguments: ['init_from']",
+    # мы отключаем пересоздание внутри from_documents.
     Qdrant.from_documents(
         documents,
         embeddings,
         url=QDRANT_URL,
         api_key=QDRANT_API_KEY,
         collection_name=COLLECTION_NAME,
-        force_recreate=True # Пересоздаем коллекцию при каждой полной загрузке файла, чтобы избежать дублей
-        # Если нужно добавлять, можно поставить False, но тогда нужно следить за дубликатами
+        force_recreate=False
     )
     
     print(f"Успешно проиндексировано {len(documents)} документов в Qdrant.")
